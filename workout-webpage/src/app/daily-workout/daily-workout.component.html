@@ -1,0 +1,46 @@
+<div style="max-width: 400px; margin: 2rem auto; text-align: left;">
+    <h1>Daily Workout</h1>
+  
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+      <button mat-mini-fab color="primary" (click)="decrement('pushup')">-</button>
+      <button mat-mini-fab color="accent" (click)="increment('pushup')">+</button>
+      <p style="margin: 0 1rem;">Pushups: {{ todays_workouts.pushup() }}/{{ pushup_min }}</p>
+    </div>
+  
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+      <button mat-mini-fab color="primary" (click)="decrement('situp')">-</button>
+      <button mat-mini-fab color="accent" (click)="increment('situp')">+</button>
+      <p style="margin: 0 1rem;">Situps: {{ todays_workouts.situp() }}/{{ situp_min }}</p>
+    </div>
+  
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+      <button mat-mini-fab color="primary" (click)="decrement('squat')">-</button>
+      <button mat-mini-fab color="accent" (click)="increment('squat')">+</button>
+      <p style="margin: 0 1rem;">Squats: {{ todays_workouts.squat() }}/{{ squat_min }}</p>
+    </div>
+  
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+      <button mat-mini-fab color="primary" (click)="decrement('run')">-</button>
+      <button mat-mini-fab color="accent" (click)="increment('run')">+</button>
+      <p style="margin: 0 1rem;">Run: {{ todays_workouts.run() }}/{{ run_min }} Miles</p>
+    </div>
+  
+    <!-- Save Progress -->
+    <button mat-raised-button color="primary" style="margin: 1rem 0;" (click)="saveWorkout()">Save Progress</button>
+  
+    <!-- Download Workout History -->
+    <button mat-raised-button color="accent" style="margin: 1rem 0;" (click)="downloadWorkoutHistory()">
+        Download Workout History
+    </button>
+
+    <!-- Display Workout History -->
+    <h2>Workout History</h2>
+    <div *ngFor="let entry of workoutHistory()">
+      <p>
+        <strong>{{ entry.date }}</strong>: Pushups {{ entry.workouts.pushup }},
+        Situps {{ entry.workouts.situp }}, Squats {{ entry.workouts.squat }},
+        Run {{ entry.workouts.run }} Miles
+      </p>
+    </div>
+  </div>
+  
