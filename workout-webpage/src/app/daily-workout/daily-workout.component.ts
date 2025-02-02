@@ -1,7 +1,13 @@
 import { Component, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Import CommonModule
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+
+interface Workout {
+  amount: number;
+  minRequired: number;
+  unit: string;
+}
 
 @Component({
   selector: 'app-daily-workout',
@@ -10,66 +16,52 @@ import { saveAs } from 'file-saver';
   standalone: true,
 })
 export class DailyWorkoutComponent {
-  pushup_min = 100;
-  situp_min = 100;
-  squat_min = 100;
-  run_min = 2;
-
-  // Signals for today's workout
-  todays_workouts = {
-    pushup: signal(0),
-    situp: signal(0),
-    squat: signal(0),
-    run: signal(0),
-  };
+  // Using Record for workouts with type as key
+  workouts = signal<Record<string, Workout>>({
+    pushup: { amount: 0, minRequired: 100, unit: 'reps' },
+    situp: { amount: 0, minRequired: 100, unit: 'reps' },
+    squat: { amount: 0, minRequired: 100, unit: 'reps' },
+    run: { amount: 0, minRequired: 2, unit: 'miles' }
+  });
 
   // Signal for historical data
-  workoutHistory = signal<{ date: string; workouts: any }[]>([]);
+  workoutHistory = signal<{ day: string; workouts: Record<string, Workout> }[]>([]);
 
   constructor(private http: HttpClient) {
     this.loadWorkoutHistory(); // Load history on component initialization
   }
 
-  increment(workout: keyof typeof this.todays_workouts) {
-    this.todays_workouts[workout].set(this.todays_workouts[workout]() + 1);
+  increment(workoutType: string) {
+    const currentWorkout = this.workouts()[workoutType];
+    if (currentWorkout) {
+      this.workouts.set({
+        ...this.workouts(),
+        [workoutType]: { ...currentWorkout, amount: currentWorkout.amount + 1 }
+      });
+    }
   }
 
-  decrement(workout: keyof typeof this.todays_workouts) {
-    if (this.todays_workouts[workout]() > 0) {
-      this.todays_workouts[workout].set(this.todays_workouts[workout]() - 1);
+  decrement(workoutType: string) {
+    const currentWorkout = this.workouts()[workoutType];
+    if (currentWorkout && currentWorkout.amount > 0) {
+      this.workouts.set({
+        ...this.workouts(),
+        [workoutType]: { ...currentWorkout, amount: currentWorkout.amount - 1 }
+      });
     }
+  }
+
+  addWorkout(type: string, minRequired: number, unit: string) {
+    this.workouts.set({
+      ...this.workouts(),
+      [type]: { amount: 0, minRequired, unit }
+    });
   }
 
   loadWorkoutHistory() {
     this.http.get<any[]>('./assets/workout-history.json').subscribe((data) => {
       this.workoutHistory.set(data);
     });
-  }
-
-  // Save today's workout to the workout history
-  saveWorkout() {
-    // Get today's date in local timezone
-    const today = new Date();
-    const localDate = today.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
-  
-    const newEntry = {
-      date: localDate,
-      workouts: {
-        pushup: this.todays_workouts.pushup(),
-        situp: this.todays_workouts.situp(),
-        squat: this.todays_workouts.squat(),
-        run: this.todays_workouts.run(),
-      },
-    };
-  
-    // Update history
-    const updatedHistory = [...this.workoutHistory(), newEntry];
-    this.workoutHistory.set(updatedHistory);
-  
-    // Reset today's workout
-    Object.keys(this.todays_workouts).forEach((key) =>
-      this.todays_workouts[key as keyof typeof this.todays_workouts].set(0)
-    );
   }
 
   downloadWorkoutHistory() {

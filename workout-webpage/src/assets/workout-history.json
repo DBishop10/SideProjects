@@ -1,1 +1,28 @@
-[]
+[
+    {
+        "day": "2025-02-02",
+        "workouts": {
+            "pushups": { "amount": 50, "unit": "reps" },
+            "run": { "amount": 2, "unit": "miles" }
+        },
+        "notes": "Feeling strong today!"
+    },
+    {
+        "day": "2025-02-03",
+        "workouts": {
+            "pushups": { "amount": 50, "unit": "reps" },
+            "run": { "amount": 2, "unit": "miles" }
+        },
+        "notes": "More energy today!"
+    },
+    {
+        "day": "2025-02-04",
+        "workouts": {
+            "pushups": { "amount": 50, "unit": "reps" },
+            "squats": { "amount": 50, "unit": "reps" },
+            "run": { "amount": 2, "unit": "miles" }
+        },
+        "notes": "Tired but good workout."
+    }
+]
+  

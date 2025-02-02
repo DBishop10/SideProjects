@@ -1,46 +1,35 @@
 <div style="max-width: 400px; margin: 2rem auto; text-align: left;">
-    <h1>Daily Workout</h1>
+  <h2>Daily Workout</h2>
+  <div *ngFor="let workout of workouts() | keyvalue" style="display: flex; align-items: center; margin-bottom: 1rem;">
+    <button mat-mini-fab color="primary" (click)="decrement(workout.key)">-</button>
+    <button mat-mini-fab color="accent" (click)="increment(workout.key)">+</button>
+    <p style="margin: 0 1rem;">
+      {{ workout.key | titlecase }}: {{ workout.value.amount }}/{{ workout.value.minRequired }} {{ workout.value.unit }}
+    </p>
+  </div>
+
   
-    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-      <button mat-mini-fab color="primary" (click)="decrement('pushup')">-</button>
-      <button mat-mini-fab color="accent" (click)="increment('pushup')">+</button>
-      <p style="margin: 0 1rem;">Pushups: {{ todays_workouts.pushup() }}/{{ pushup_min }}</p>
-    </div>
-  
-    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-      <button mat-mini-fab color="primary" (click)="decrement('situp')">-</button>
-      <button mat-mini-fab color="accent" (click)="increment('situp')">+</button>
-      <p style="margin: 0 1rem;">Situps: {{ todays_workouts.situp() }}/{{ situp_min }}</p>
-    </div>
-  
-    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-      <button mat-mini-fab color="primary" (click)="decrement('squat')">-</button>
-      <button mat-mini-fab color="accent" (click)="increment('squat')">+</button>
-      <p style="margin: 0 1rem;">Squats: {{ todays_workouts.squat() }}/{{ squat_min }}</p>
-    </div>
-  
-    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-      <button mat-mini-fab color="primary" (click)="decrement('run')">-</button>
-      <button mat-mini-fab color="accent" (click)="increment('run')">+</button>
-      <p style="margin: 0 1rem;">Run: {{ todays_workouts.run() }}/{{ run_min }} Miles</p>
-    </div>
-  
-    <!-- Save Progress -->
-    <button mat-raised-button color="primary" style="margin: 1rem 0;" (click)="saveWorkout()">Save Progress</button>
-  
-    <!-- Download Workout History -->
-    <button mat-raised-button color="accent" style="margin: 1rem 0;" (click)="downloadWorkoutHistory()">
-        Download Workout History
+  <!-- Form to add a new workout dynamically -->
+  <div style="margin-top: 2rem;">
+    <input type="text" placeholder="Workout Type" #typeInput />
+    <input type="number" placeholder="Min Required" #minInput />
+    <input type="text" placeholder="Unit (reps, miles, kg, etc.)" #unitInput />
+    <button mat-button color="primary" (click)="addWorkout(typeInput.value, minInput.valueAsNumber, unitInput.value)">
+      Add Workout
     </button>
+  </div>
+ 
 
     <!-- Display Workout History -->
     <h2>Workout History</h2>
     <div *ngFor="let entry of workoutHistory()">
-      <p>
-        <strong>{{ entry.date }}</strong>: Pushups {{ entry.workouts.pushup }},
-        Situps {{ entry.workouts.situp }}, Squats {{ entry.workouts.squat }},
-        Run {{ entry.workouts.run }} Miles
-      </p>
+      <strong>{{ entry.day }}</strong>:
+      
+      <!-- Use keyvalue pipe to iterate over the workout record -->
+      <div *ngFor="let workout of entry.workouts | keyvalue" style="display: flex; align-items: center; margin-bottom: 1rem;">
+        <div> {{ workout.key | titlecase }}: {{ workout.value.amount }} {{ workout.value.unit }} </div>
+      </div>
     </div>
+
   </div>
   
